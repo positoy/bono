@@ -979,15 +979,47 @@ io.on('connection', function(socket) {
 
 
 	//////////////////////
-	// Enter the room 
+	// room OUT
 	//////////////////////
 	//data : {project:_GLOBAL.project, id:_GLOBAL.id}
-	socket.on("in", function(data) {
-		socket.join(data.project);
-		socket.p_name = data.project;
+	// socket.on("out", function(data) {	
+	// 	socket.broadcast.to(socket.room).emit("room_out_response", data);
+	// });
 
-		console.log("/////////////////socket room check///////////////////////");
-		console.log("User " + socket.handshake.address + " in at : " + socket.p_name);
+	//////////////////////
+	// room IN
+	/////////////////////
+	//data : {id: _GLOBAL.id}
+	socket.on("in", function(data) {
+		socket.room = "livingRoom"; //기본은 livingRoom  이다.
+		socket.join(socket.room);
+	});
+
+
+	//////////////////////
+	// room SWITCH
+	//////////////////////
+	//data : {project:_GLOBAL.project, id:_GLOBAL.id}
+	socket.on("switch", function(data) {
+		var newroom = data.project;
+
+		//기존 방 사람들한테 내 자리에서 포스트잇 지우라고 퍼트려주고
+		io.in(socket.room).emit("room_out_delete", data.id);		
+		// 기존 방에서 나오고
+		socket.leave(socket.room);
+
+
+
+		// 새 방에 들어감
+		socket.join(newroom);
+		socket.room = newroom;	//새 방을 socket의 방으로 설정해주고		
+		// 방에 들어간 사람들한테 들어왔다고 메세지
+
+		io.in(socket.room).emit("room_in_msg", data);
+
+
+		console.log("/////////////////room swtich check///////////////////////");
+		console.log("User " + socket.handshake.address + " in at : " + socket.room);
 		
 		// 0. 사용자가 이미 속해있던 다른 프로젝트의 work들을 빼준다.
 		//////////////////////
@@ -1034,7 +1066,6 @@ io.on('connection', function(socket) {
 		// 객체 생성
 		//////////////////////
 		// 1) 프로젝트가 있나를 검사해서
-
 		if(CurrentProjectsArray.length == 0)
 		{
 			var workArray = [];
@@ -1066,60 +1097,33 @@ io.on('connection', function(socket) {
 		}
 
 
+		//////////////////////
+		// roon_in_init_draw
+		//////////////////////
+		// 이미 참여중인 사용자를 보내준다.
+		// data :  {project: _GLOBAL.project, id: _GLOBAL.id}
+		//socket.on("roon_in_init_draw", function(data){
+			for(var i in CurrentProjectsArray)
+			{
+				if(data.project == CurrentProjectsArray[i].p_name)
+				{
+					data.works = CurrentProjectsArray[i].workArray;
+					socket.emit("room_in_init_draw", data);
+				}
+			}
+		//});
 
-
-
-
-
-
-
-		//내가 들어온걸 같은 방 사람들한테 알려라
 		//나를 포함해서 방사람들 모두에게
-		io.in(socket.p_name).emit("room_in_response",data);
+		io.in(socket.room).emit("room_in_draw",data);
 		//나를 제외한 같은 방사람들에게
-		//socket.broadcast.to(socket.p_name).emit("room_in_response", data);
-
-
-
-
-
-
-
-
-
-
-
-
-
-		//*********************************************************************************
-		// 제일 처음 프로젝트가 딱 만들어질 때, 한번 해줘야함
-		//var workArray = [];	//일단 빈거 넣어주고
-		//var p = new projectObj(project_name, workArray);
-		//CurrentProjectsArray.push(p);
-		//얘를 invite되서 사용자가 해당 프로젝트에 들어갈때도 해줘야된다.★★(ㄴㄴV)
-
-		/////////////////////////test dummy
-		//var t1 = new taskObj('chang','./user_data/projects/aync_test/_a/ant.properties');
-		//var t2 = new taskObj('chang','testfile');
-
-		//proj1 = new projectObj('ace_test2',workArray1);
-		//CurrentProjectsArray[0].workArray.push(t1);
-		//CurrentProjectsArray[0].workArray.push(t2);
-		///////////////////////////////////////	
+		//socket.broadcast.to(socket.room).emit("room_in_draw", data);
 
 	});
+	
 
-
-
-
-
-
-
-
-
-
-
-
+	//////////////////////
+	// workList_request
+	//////////////////////
 	// data : {project: _GLOBAL.project, id: usr_id}
 	socket.on("workList_request", function(data) {
 		//var splitArray = data.id.split('&nbsp');
@@ -1138,9 +1142,9 @@ io.on('connection', function(socket) {
 					// console.log("////////////////////////");
 					if(data.id === CurrentProjectsArray[i].workArray[j].name)
 					{
-						//console.log("workList_request check////////////////////");
-						//console.log(CurrentProjectsArray[i].workArray);
-						socket.emit("workList_response", CurrentProjectsArray[i].workArray);
+						console.log("workList_request check////////////////////");
+						console.log(CurrentProjectsArray[i].workArray);
+						socket.emit("workList_response", {id: data.id, works: CurrentProjectsArray[i].workArray});
 					}
 				}
 			}
@@ -1149,59 +1153,26 @@ io.on('connection', function(socket) {
 	});
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	socket.on("push_msg", function(data) {
 		console.log("/////////////////socket data check///////////////////////");			
 		console.log(data.id);
-		io.in(socket.p_name).emit("get_msg", data);
+		io.in(socket.room).emit("get_msg", data);
 	});
 
+///////////////////////////////////////////////////////////////////////////////
 
-	// ****************************** work sunc ******************************
-	// var CurrentProjectsArray = [];
 
-	// function projectObj(_name, _workArray) {
-	// 	this.p_name = name;
-	// 	this.workArray = _workArray;
-	// }
-	// //CurrentProjectsArray.push(projectObj1);
 
-	// function taskObj(_name, _work) {
-	// 	this.name = _name;
-	// 	this.worrk = _work;
-	// }
-	// //var task1 = new taskObj(user_name,file_path);
-	// //var workArray = [];
-	// //workArray.push(task1);
-	// //
-	// // ****************************** work sync ******************************
+
+
 	
-	//////////////////////
-	// Work Delete
-	//////////////////////
+	////////////////////////////////////
+	// Work Delete + room_out_delete
+	///////////////////////////////////
 	//id_data : _GLOBAL.id
 	socket.on("logout_delete", function(id_data) {
+
+		io.in(socket.room).emit("room_out_delete", id_data);
 
 		var delete_cnt = 0;
 
@@ -1543,7 +1514,7 @@ io.on('connection', function(socket) {
 
 		if ( typeof _data.project === "undefined") {
 			//socket.emit("push_response", null);
-			io.in(socket.p_name).emit("push_response",null);
+			io.in(socket.room).emit("push_response",null);
 			return;
 		}
 
@@ -1612,7 +1583,7 @@ io.on('connection', function(socket) {
 			//////////////////////
 
 
-			io.in(socket.p_name).emit("push_response",data);
+			io.in(socket.room).emit("push_response",data);
 			//socket.emit("push_response", data);
 		}
 

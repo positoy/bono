@@ -61,15 +61,21 @@ $(document).ready(function() {
 		}
 	});
 
-	///////////////////// cwlsn88 /////////////////////
-	//////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////
+
+
+
+
+
+
+	//로그인 처음 되면 리빙룸에 있도록 in
+	socket.emit("in",{id: _GLOBAL.id});
+	
 
 	//////////////////////////
 	// USER IN - 포스트잇 추가
 	//////////////////////////
 	//data : {project: _GLOBAL.project, id:_GLOBAL.id, file_name: file}
-	socket.on("room_in_response", function(data) {
+	socket.on("room_in_draw", function(data) {
 		var position = 0;
 
 		for(var i in userIndexArray) {
@@ -79,24 +85,64 @@ $(document).ready(function() {
 			}
 		}
 
-		if(position == 0) {
+		if(position == 0) {	
 			$("#user_0").css("visibility", "visible");
-			$("#user_0 > p").html(/*"&nbsp;&nbsp;&nbsp;&nbsp;" + */data.id);
+			$("#user_0 > p").html(data.id);
 			userIndexArray[position] = 1;
 		} else if(position == 1) {
 			$("#user_1").css("visibility", "visible");
-			$("#user_1 > p").html("&nbsp;&nbsp;&nbsp;&nbsp;" + data.id);
+			$("#user_1 > p").html(data.id);
 			userIndexArray[position] = 1;
 		} else if(position == 2) {
 			$("#user_2").css("visibility", "visible");
-			$("#user_2 > p").html("&nbsp;&nbsp;&nbsp;&nbsp;" + data.id);
+			$("#user_2 > p").html(data.id);
+			userIndexArray[position] = 1;
+		} else if(position == 3) {
+			$("#user_3").css("visibility", "visible");
+			$("#user_3 > p").html(data.id);
 			userIndexArray[position] = 1;
 		}
 
 	});
 
+
+	//////////////////////////
+	// USER OUT - 포스트잇 삭제
+	//////////////////////////
+	socket.on("room_out_delete", function(id_data) {
+		
+		$("#user_container > div").each(function(index){
+			//console.log(filePathArr[filePathArr.length - 1] + "/" + $(this).text().slice(1, $(this).text().length));
+			var tmp = $(this).children("p").text();
+			if(id_data == tmp){
+				alert(index + "!!!!");
+				userIndexArray[index] = 0;
+
+				if(index == 0) {	
+					$("#user_0").css("visibility", "hidden");
+				} else if(index == 1) {
+					$("#user_1").css("visibility", "hidden");
+				} else if(index == 2) {
+					$("#user_2").css("visibility", "hidden");
+				} else if(index == 3) {
+					$("#user_3").css("visibility", "hidden");
+				}
+
+			}
+		});
+
+	});
+
+
+
+
+
+
+
+
+
 	/////////////////////////////////////////
-	// USER WORKLIST - 포스트잇에 workList추가
+	// USER WORKLIST - 포스트잇에 id
 	/////////////////////////////////////////
 
 	$(".users_label").click(function(e){
@@ -104,16 +150,25 @@ $(document).ready(function() {
 		$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
 		var usr_id = $(t).parent().children("p").text();
 		
-		socket.emit("workList_request", {project: _GLOBAL.project, id: usr_id});	//usr_id제대로 바껴서 들어가는지 확인 ()
-	});
+		socket.emit("workList_request", {project: _GLOBAL.project, id: usr_id});	//usr_id제대로 바껴서 들어가는지 확인 (V)
 
-	// data : CurrentProjectsArray[i].workArray
-	socket.on("workList_response", function(data) {
-		console.log("workList_response data check////////////////////////");
-		var str = "///WORKLIST///" ;
-		// 데이타 받아서 그려준다.
-		for(var i in data) 
-			str += ("\n" + data[i].work);
+		/////////////////////////////////////////
+		// USER WORKLIST - 포스트잇에 workList추가
+		/////////////////////////////////////////
+		$("#user_contents_inner").text("///WORKLIST///" );
+		// data : {id: data.id, works: CurrentProjectsArray[i].workArray}
+		socket.on("workList_response", function(data) {
+			console.log("workList_response data check////////////////////////");
+			var str = "///WORKLIST///" ;
+			// 데이타 받아서 그려준다.
+			for(var i in data.works) {
+				//************내꺼만 그려준다. 이부분 제대로 되나 체크 (V)
+				if(usr_id == data.works[i].name)
+					str += ("\n" + data.works[i].work);
+			}
+			
+			$("#user_contents_inner").text(str);
+		});
 
 		$("#user_contents_inner").text(str);
 	});
@@ -526,10 +581,17 @@ $(document).ready(function() {
 			make_fileTree(fileTreePath);
 
 		    //*************************//
-		    // Enter the room 
+		    // Switch the room 
 		    //*************************//
-			socket.emit("in", {project:_GLOBAL.project, id:_GLOBAL.id});
+		    $("#user_0").css("visibility", "hidden");
+			$("#user_1").css("visibility", "hidden");
+			$("#user_2").css("visibility", "hidden");
+			$("#user_3").css("visibility", "hidden");
+			//userIndexArray[] = 0; 
 
+			socket.emit("switch", {project:_GLOBAL.project, id:_GLOBAL.id});
+			//내꺼에다가, 이미 참여중이였던 사용자꺼를 그려준다.
+			//socket.emit("roon_in_init_draw", {project: _GLOBAL.project, id: _GLOBAL.id});
 
 			$("#dialog_select_project").dialog("close");
 		} else {
@@ -542,6 +604,73 @@ $(document).ready(function() {
 				});
 		}
 	});
+	
+	socket.on("room_in_msg", function(data) {
+		alert(data.project + " 에 " + data.id + " 님 참여!");	
+	});	
+
+	// data : {project: _GLOBAL.project, id: _GLOBAL.id}
+	// data.works = CurrentProjectsArray[i].workArray;
+	socket.on("room_in_init_draw", function(data) {
+		//alert("오나?!?!");
+		alert(data.works);
+		var position = 0;
+		for(var index in data.works)
+		{
+			//작업중이던 다른 사용자를 찾아서
+			if(data.works[index].name != data.id)
+			{
+				for(var i in userIndexArray) {
+					if(userIndexArray[i] == 0) {
+						position = i;
+						break;
+					}
+				}
+
+				if(position == 0) {	
+					$("#user_0").css("visibility", "visible");
+					$("#user_0 > p").html(data.works[index].name);
+					userIndexArray[position] = 1;
+				} else if(position == 1) {
+					$("#user_1").css("visibility", "visible");
+					$("#user_1 > p").html(data.works[index].name);
+					userIndexArray[position] = 1;
+				} else if(position == 2) {
+					$("#user_2").css("visibility", "visible");
+					$("#user_2 > p").html(data.works[index].name);
+					userIndexArray[position] = 1;
+				} else if(position == 3) {
+					$("#user_3").css("visibility", "visible");
+					$("#user_3 > p").html(data.works[index].name);
+					userIndexArray[position] = 1;
+				}
+			
+			}
+
+		}
+
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	// *********************************** 2.26 ****************************
 	// Context Menu
@@ -911,81 +1040,7 @@ $(document).ready(function() {
 
 	$("#git_tree_container").on("mouseleave", "div", function(e) {
 		$("#git_tree_window").css("visibility", "hidden");
-	}); 
-	
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// $(".users_label").click(function(e){
-	// 	var t = e.target;
-	// 	$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
-
-
-
-		
-	// 	var usr_id = $(t).parent().children("p").text();
-	// 	$("#user_contents_inner").text(usr_id + "work array");
-
-
-
-	// });
-	
-	// $(".users > p").mouseenter(function(e){
-	// 	var pos = $(e.target).parent().position();
-	// 	$("#user_contents").css("top", pos.top);
-	// 	$("#user_contents").removeClass("uc_off");
-	// 	$("#user_contents").addClass("uc_on");
-	// });
-	
-	// $(".users > p").mouseleave(function(e){
-	// 	$("#user_contents").removeClass("uc_on");
-	// 	$("#user_contents").addClass("uc_off");
-	// 	var t = e.target;
-	// 	$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
-	// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
+	}); 	
 	
 	
 	
@@ -1006,7 +1061,7 @@ $(document).ready(function() {
 	//	SOCKET.IO
 	////////////////////////////////////////////////////////
 
-	socket = io();
+//////////////////////////////////////////////////////////////socket = io();
 	console.log("connect to socket.io");
 
 	////////////////////////////////////
@@ -1025,7 +1080,6 @@ $(document).ready(function() {
 		var git_case = $(this).attr('title');
 		if(git_case == "commit"){
 			var inputString = prompt("커밋메세지를 입력하세요.","commit message");
-			editor.setReadOnly(true);
 			socket.emit("commit", {id: _GLOBAL.id, project: _GLOBAL.project, m: inputString});
 			$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
 				tttt++;
