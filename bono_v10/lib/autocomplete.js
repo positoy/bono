@@ -57,6 +57,9 @@ ac.parseImports = function(code) {       // 코드에 포함된 imports들을 ac
 // 현재 커서가 위치한 라인에 해당하는 클래스를 구함
 ac.getClass = function(code, current_line) {
     
+    console.log("[code]", code);
+    console.log("[current line]", current_line);
+
     var split_dot = current_line.split('.');
     var split_space = split_dot[split_dot.length - 2].split(' ');
 
