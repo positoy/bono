@@ -336,11 +336,11 @@ app.get('/btm_menu_export', function(request, response){
 	console.log(_GLOBAL.cur_project_target);
 	console.log(path);
 	
-	var child = exec("cd " + path +"; "+ " zip -r ../"+user_id+".zip ./*", function(err, stdout ,stderr){
+	var child = exec("cd " + path +"; "+ " zip -r ../"+project_name+".zip ./*", function(err, stdout ,stderr){
  		if (err === null)
 		{
 			console.log(context, "	successful");
-			response.download('./user_data/projects/' + project_name +'/' +user_id+'.zip');
+			response.download('./user_data/projects/' + project_name +'/' +project_name+'.zip');
 		}
 		else
 		{
@@ -362,7 +362,7 @@ app.get('/btm_menu_apk', function(request, response){
 	var project_name = request.param("project");
 
 	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/";
-	var Apk_name = user_id+"-release.apk";	
+	var Apk_name = project_name+"-release.apk";	
 	console.log(path);
 	
 	var child = exec("cd " + path +";", function(err, stdout ,stderr){

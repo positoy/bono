@@ -25,6 +25,11 @@
 	</head>
 
 	<body>
+		<div class="overlay_off" id="spinner_container">
+			<div class="square">
+				<div class="spin"></div>
+			</div>
+		</div>
 		<div id="container">
 			<div id="left">
 				<input type="hidden" id="left_tree_hoverdItem"/>
@@ -179,12 +184,19 @@
 			</ul>
 			</div>
 		</div>
-		<div id="uploadSearch">
-			<form action="/upload", method="post" , enctype="multipart/form-data" , id="uploadForm" >
-			<input type="file" , name= "uploadFile">
-			<input type="submit", value="upload" name= "Upload" id="submit" />
-		</form>
+
+		<div id="dialog_importProject" title="Import Project" style="display: none;">
+			<p style="color: white; font-weight: bold; font-size: 13px;">
+				Invite Your Companion to This Project!
+			</p>
+			<div class="dialog_inner_container">
+				<form action="/upload", method="post" , enctype="multipart/form-data" , id="uploadForm" >
+					<input type="file" , name= "uploadFile">
+					<input type="submit", value="upload" name= "Upload" id="submit" />
+				</form>
+			</div>
 		</div>
+
 		<div id="personal_info">
 			<img src="img/personal.png">
 		</div>
@@ -265,7 +277,7 @@
 		
 		
 		<div id="mini_popup">
-				&nbsp;&nbsp;<span><img src="img/check.png" />&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="mini_popup_text">File Saved</span>
+				&nbsp;&nbsp;<span><img src="img/check.png" id="mini_popup_img"/>&nbsp;&nbsp;&nbsp;&nbsp;</span><span id="mini_popup_text">File Saved</span>
 		</div>
 		<!-- **************************** 2.26 *********************** -->		
 

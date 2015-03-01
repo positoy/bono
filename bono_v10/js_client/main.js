@@ -43,7 +43,27 @@ $(document).ready(function() {
 
 
 
-	//=================================================================
+	//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+	///////////////////// cwlsn88 /////////////////////
+	
+	
+	$(document).on({
+		ajaxStart : function(){
+			console.log("AJAX START");
+			$("#spinner_container").animate({opacity: '1'}, "slow");
+			$("#spinner_container").css("z-index", "9999999");
+		},
+		ajaxStop : function(){
+			console.log("AJAX STOP");
+			$("#spinner_container").animate({opacity: '0'}, "slow");
+			$("#spinner_container").css("z-index", "-9999");
+		}
+	});
+
+	///////////////////// cwlsn88 /////////////////////
+	//////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
 
 	//////////////////////////
 	// USER IN - 포스트잇 추가
@@ -115,24 +135,6 @@ $(document).ready(function() {
 	});
 
 
-	//=================================================================
-
-
-	// for junseok
-	$("#btm_menu_apk").click(function(){
-		alert("APK!");
-	});
-
-
-
-
-
-
-
-	
-	
-
-
 	// *********************************** 2.26 ****************************
 	// flag : is selected fileTree or top bar?
 	// *********************************** 2.26 ****************************
@@ -153,7 +155,7 @@ $(document).ready(function() {
 		editor.setTheme('ace/theme/tomorrow_night_eighties');
 		editor.setShowPrintMargin(false);
 		editor.getSession().setMode("ace/mode/java");
-		//document.getElementById("right_editor_inner").style.fontSize = "15px";
+		document.getElementById("right_editor_inner").style.fontSize = "15px";
 
 		//_working_flag설정
 		if(_working_flag == 1) {
@@ -185,12 +187,13 @@ $(document).ready(function() {
 			exec : function(editor) {
 				var cur_contents = editor.getValue();
 				if (prv_contents == cur_contents){
+					$("#mini_popup_img").attr("src", "img/not_check.png");
 					$("#mini_popup_text").text("Nothig Changed to Save");
 					$("#mini_popup").fadeIn("slow", function() {
 						setTimeout(function() {
 							$("#mini_popup").fadeOut("slow");
 						}, pupup_time);
-					}); 	
+					});
 				}
 				else {
 					prv_contents = cur_contents;
@@ -200,13 +203,13 @@ $(document).ready(function() {
 						fileName : file,
 						contents : editor.getValue()
 					}, function(data,status) {
+						$("#mini_popup_img").attr("src", "img/check.png");
 						$("#mini_popup_text").text("Save Complete");
 						$("#mini_popup").fadeIn("slow", function() {
 							setTimeout(function() {
 								$("#mini_popup").fadeOut("slow");
 							}, pupup_time);
 						$("#right_log_inner").append(data);
-
 						}); 
 					});
 				}
@@ -415,8 +418,21 @@ $(document).ready(function() {
 		$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
 		isShownBtmMenu = false;
 
-		$("#uploadSearch").animate({top : "90%"}, {duration: 1000, easing: 'easeInOutBack'});
-		
+		$("#dialog_importProject").dialog({
+			dialogClass : "bottom_dialog",
+			modal : true,
+			resizable : true,
+			width : 400,
+			height : 280,
+			show : {
+				effect : "fade",
+				duration : 500
+			},
+			hide : {
+				effect : "fade",
+				duration : 500
+			}
+		});
 	});	
 	$("#submit").click(function(data){
 		$("#uploadSearch").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
@@ -474,6 +490,10 @@ $(document).ready(function() {
 				$("#git_tree_container").append(data);
 			});
 
+			$("#right_topbar_sortable").children().remove();
+			if(editor != null)
+				editor.container.remove();
+
 			make_fileTree(fileTreePath);
 
 		    //*************************//
@@ -484,7 +504,13 @@ $(document).ready(function() {
 
 			$("#dialog_select_project").dialog("close");
 		} else {
-			alert("Please Select a Project to open..");
+			$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Please Select a Project to open");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 		}
 	});
 
@@ -547,12 +573,13 @@ $(document).ready(function() {
 
 							console.log("client : " + data);
 
+							$("#mini_popup_img").attr("src", "img/check.png");
 							$("#mini_popup_text").text("Delete Complete");
 							$("#mini_popup").fadeIn("slow", function() {
 								setTimeout(function() {
 									$("#mini_popup").fadeOut("slow");
 								}, pupup_time);
-							}); 
+							});  
 
 							make_fileTree(fileTreePath);
 						});
@@ -573,6 +600,7 @@ $(document).ready(function() {
 		$.get('/make_dir?path=' + path, function(data, status){
 			console.log("client : " +data);
 			
+			$("#mini_popup_img").attr("src", "img/check.png");
 			$("#mini_popup_text").text("Make New Directory Complete");
 			$("#mini_popup").fadeIn("slow", function() {
 				setTimeout(function() {
@@ -593,6 +621,7 @@ $(document).ready(function() {
 		$.get('/make_file?path=' + path, function(data, status) {
 			console.log("client : " +data);
 			
+			$("#mini_popup_img").attr("src", "img/check.png");
 			$("#mini_popup_text").text("Make New File Complete");
 			$("#mini_popup").fadeIn("slow", function() {
 				setTimeout(function() {
@@ -727,15 +756,33 @@ $(document).ready(function() {
 						$("#form_pdesc").val("");
 						$("#dialog_createProject").dialog("close");
 
-						alert("project creation successful");
+						$("#mini_popup_img").attr("src", "img/check.png");
+						$("#mini_popup_text").text("Create Project Complete");
+						$("#mini_popup").fadeIn("slow", function() {
+							setTimeout(function() {
+								$("#mini_popup").fadeOut("slow");
+							}, pupup_time);
+						});
 
 					} else {
 						// case1. 이미 존재하는 프로젝트입니다.
-						alert("Please Chk Id / Pwd");
+						$("#mini_popup_img").attr("src", "img/not_check.png");
+						$("#mini_popup_text").text("Exist Project Name");
+						$("#mini_popup").fadeIn("slow", function() {
+							setTimeout(function() {
+								$("#mini_popup").fadeOut("slow");
+							}, pupup_time);
+						});
 					}
 				});
 			} else {
-				alert("Please Chk Id / Pwd");
+				$("#mini_popup_img").attr("src", "img/not_check.png");
+					$("#mini_popup_text").text("Please Fill Out the Form");
+					$("#mini_popup").fadeIn("slow", function() {
+						setTimeout(function() {
+							$("#mini_popup").fadeOut("slow");
+						}, pupup_time);
+					});
 			}
 	});
 
@@ -758,12 +805,24 @@ $(document).ready(function() {
 			}, function(data) {
 
 				if (data == "project_invite_successed") {
-					alert("project invitation successful");
+					$("#mini_popup_img").attr("src", "img/check.png");
+						$("#mini_popup_text").text("Invite User to Project Success");
+						$("#mini_popup").fadeIn("slow", function() {
+							setTimeout(function() {
+								$("#mini_popup").fadeOut("slow");
+							}, pupup_time);
+					});
 				} else {
 					// case1. 존재하지 않는 상대방입니다.
 					// case2. 존재하지 않는 프로젝트입니다.
 					// case3. 상대방이 이미 프로젝트에 참여중입니다.
-					alert("Please Chk Id / Pwd");
+					$("#mini_popup_img").attr("src", "img/not_check.png");
+						$("#mini_popup_text").text("Invite User to Project Failed");
+						$("#mini_popup").fadeIn("slow", function() {
+							setTimeout(function() {
+								$("#mini_popup").fadeOut("slow");
+							}, pupup_time);
+					});
 				}
 			});
 			
@@ -773,7 +832,13 @@ $(document).ready(function() {
 			$("#form_inv_msg").val("");
 			
 		} else {
-			alert("Please Chk Id / Pwd");
+			$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Please Fill Out the Form");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+			});
 		}
 	});
 
@@ -978,7 +1043,13 @@ $(document).ready(function() {
 			console.log(data);
 			if (data === null)
 			{
-				alert("프로젝트를 먼저 로드하세요.");
+				$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Please Load the Project First");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 				//$("#git_pull").html("pull");
 				return;
 			}
@@ -988,11 +1059,23 @@ $(document).ready(function() {
 				console.log("pull successful.", data.reason);
 				if (data.reason.search("Already up-to-date") != -1)
 				{
-					alert("이미 최신입니다.");
+					$("#mini_popup_img").attr("src", "img/not_check.png");
+					$("#mini_popup_text").text("Already Up-to-Date");
+					$("#mini_popup").fadeIn("slow", function() {
+						setTimeout(function() {
+							$("#mini_popup").fadeOut("slow");
+						}, pupup_time);
+					});
 				}
 				else
 				{
-					alert("성공적으로 pull 했습니다.");
+					$("#mini_popup_img").attr("src", "img/check.png");
+					$("#mini_popup_text").text("Pull Project Success");
+					$("#mini_popup").fadeIn("slow", function() {
+						setTimeout(function() {
+							$("#mini_popup").fadeOut("slow");
+						}, pupup_time);
+					});
 					//gitTree draw
 					$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
 						console.log("/makeGitTree complete");
@@ -1013,7 +1096,13 @@ $(document).ready(function() {
 			console.log(data);
 			if (data === null)
 			{
-				alert("프로젝트를 먼저 로드하세요.");
+				$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Please Load the Project First");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 				//$("#git_commit").html("commit");
 				return;
 			}
@@ -1021,7 +1110,13 @@ $(document).ready(function() {
 			if (data.result === "successful")
 			{
 				console.log("commit successful.", data.reason);
-				alert("성공적으로 commit 했습니다.");
+				$("#mini_popup_img").attr("src", "img/check.png");
+				$("#mini_popup_text").text("Commit Project Success");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 				//gitTree draw
 				$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
 					console.log("/makeGitTree complete");
@@ -1034,7 +1129,13 @@ $(document).ready(function() {
 				console.log("commit fail.", data.reason);
 				if (data.reason.search("nothing to commit") != -1)
 				{
-					alert("commit할 수정내용이 없습니다.");
+					$("#mini_popup_img").attr("src", "img/not_check.png");
+					$("#mini_popup_text").text("Nothing to Commit");
+					$("#mini_popup").fadeIn("slow", function() {
+						setTimeout(function() {
+							$("#mini_popup").fadeOut("slow");
+						}, pupup_time);
+					});
 				}
 			}
 
@@ -1047,7 +1148,13 @@ $(document).ready(function() {
 			console.log(data);
 			if (data === null)
 			{
-				alert("프로젝트를 먼저 로드하세요.");
+				$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Please Load the Project First");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 				//$("#git_push").html("push");
 				return;
 			}
@@ -1055,7 +1162,13 @@ $(document).ready(function() {
 			if (data.result === "successful")
 			{
 				console.log("push successful.", data.reason);
-				alert("성공적으로 push 했습니다.");
+				$("#mini_popup_img").attr("src", "img/check.png");
+				$("#mini_popup_text").text("Push Project Success");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
 
 				alert(data.project + "에 변경사항!" + "\n" + data.id + "님이 push하셨습니다.");
 				
