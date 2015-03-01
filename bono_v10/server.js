@@ -983,6 +983,7 @@ io.on('connection', function(socket) {
 	//////////////////////
 	// Enter the room 
 	//////////////////////
+	//data : {project:_GLOBAL.project, id:_GLOBAL.id}
 	socket.on("in", function(data) {
 		socket.join(data.project);
 		socket.p_name = data.project;
@@ -1067,6 +1068,31 @@ io.on('connection', function(socket) {
 		}
 
 
+
+
+
+
+
+
+
+		//내가 들어온걸 같은 방 사람들한테 알려라
+		//나를 포함해서 방사람들 모두에게
+		io.in(socket.p_name).emit("room_in_response",data);
+		//나를 제외한 같은 방사람들에게
+		//socket.broadcast.to(socket.p_name).emit("room_in_response", data);
+
+
+
+
+
+
+
+
+
+
+
+
+
 		//*********************************************************************************
 		// 제일 처음 프로젝트가 딱 만들어질 때, 한번 해줘야함
 		//var workArray = [];	//일단 빈거 넣어주고
@@ -1084,6 +1110,67 @@ io.on('connection', function(socket) {
 		///////////////////////////////////////	
 
 	});
+
+
+
+
+
+
+
+
+
+
+
+
+	// data : {project: _GLOBAL.project, id: usr_id}
+	socket.on("workList_request", function(data) {
+		//var splitArray = data.id.split('&nbsp');
+		//var user_name = splitArray[splitArray.length - 1];
+
+		for(var i in CurrentProjectsArray)
+		{
+			if(CurrentProjectsArray[i].p_name == data.project)
+			{
+				//console.log("data.project :::" +data.project );
+				for(var j in CurrentProjectsArray[i].workArray)
+				{
+					// console.log("////////////////////////");
+					// console.log(data.id);
+					// console.log(CurrentProjectsArray[i].workArray[j].name);
+					// console.log("////////////////////////");
+					if(data.id === CurrentProjectsArray[i].workArray[j].name)
+					{
+						//console.log("workList_request check////////////////////");
+						//console.log(CurrentProjectsArray[i].workArray);
+						socket.emit("workList_response", CurrentProjectsArray[i].workArray);
+					}
+				}
+			}
+		}
+
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	socket.on("push_msg", function(data) {
@@ -1226,9 +1313,11 @@ io.on('connection', function(socket) {
 					console.log("[insert start!!!!!]");
 					//해당 프로젝트의 workArray에 추가
 					CurrentProjectsArray[i].workArray.push(t);
+
 					for(var idx in CurrentProjectsArray[i].workArray) {
 						console.log(CurrentProjectsArray[i].workArray[idx]);
-					}						
+					}
+						
 				}
 
 			}
@@ -1236,9 +1325,6 @@ io.on('connection', function(socket) {
 		console.log("insert 후===========================");
 		console.log(CurrentProjectsArray);
 		console.log("====================================");
-
-		//오른쪽 포스트잇으로 보내준다.
-		socket.emit("work_insert_response", data);
 
 	});
 

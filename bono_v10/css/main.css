@@ -186,14 +186,12 @@ html, body {
 }
 
 
-//////////////////////////////////////////////////
 #btm_menu ul li img {
 	width: 70px;
 	margin-top: 40px;
 	margin-right: 60px;
 	opacity: 0.5;
 }
-//////////////////////////////////////////////////
 
 
 #btm_menu ul li img:hover {
@@ -750,6 +748,11 @@ html, body {
 			height: 400px;
 		}
 		
+		.users p {
+
+			padding-left: 20px;
+		}
+
 		.users{
 			position: absolute;
 			width: 170px;
