@@ -53,6 +53,22 @@ function taskObj(_name, _work) {
 //1.// var task1 = new taskObj(user_name,file_path);
 //2.// workArray.push(task1);
 
+	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
+	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
+	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
+function chkDevice(req, res, next){
+	var ua = req.header('user-agent').toLowerCase();
+	//console.log(ua);
+	if(ua.indexOf("nexus 7") >= 0) {
+		//console.log("This is Nexus");
+		req.device = "tablet";
+		return next();
+    } else {
+    	//console.log("This is PC");
+    	return next();
+    }
+}
+
 ///////////////test dummy
 // var workArray1 = [];
 // var t1 = new taskObj('chang','./user_data/projects/ace_test2/_a/ant.properties');
@@ -62,6 +78,9 @@ function taskObj(_name, _work) {
 
 // proj1 = new projectObj('ace_test2',workArray1);
 // CurrentProjectsArray.push(proj1);
+
+
+
 var global_pushids = [];
 //****************************** work sync ******************************
 
@@ -112,7 +131,7 @@ var io = require('socket.io')(http);
 var __DIR = './user_data/projects/';
 
 // method - get /
-app.get('/', function(req, res){
+app.get('/', chkDevice, function(req, res){
 	if(req.session.user_id){
 		res.redirect('/main?id=' + req.session.user_id);
 	}
@@ -175,19 +194,28 @@ app.get('/signUp', function(req, res){
 });
 
 // method - get /main   ************************ 2.26 ************************ 
-app.get('/main', function(req, res){
+app.get('/main', chkDevice, function(req, res){
 	var user_id = req.param("id");
-	//console.log('user id : ' + user_id);
+	var page;
+	
+	if(req.device != "tablet"){
+		console.log("PC");
+		page = 'main.html';
+	}else{
+		console.log("TAB");
+		page = 'main_m.html';
+	}  
+	
 	if(req.session.user_id && req.session.user_id == user_id){
-		fs.readFile('main.html', function(err, data){
+		fs.readFile(page, function(err, data){
 			res.send(data.toString());
 		});
-	} else {
+	}
+	else{
 		console.log("Bed Request..");
 		res.redirect('/');
 	}
 });
-
 
 
 // method - get /select_project

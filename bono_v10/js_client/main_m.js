@@ -40,9 +40,6 @@ $(document).ready(function() {
 	var file_cnt = 0;
 	var socket = io();
 
-
-
-
 	//////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////
 	///////////////////// cwlsn88 /////////////////////
@@ -409,14 +406,13 @@ $(document).ready(function() {
 
 	// Bottom Menu
 	$("#left_bottom_menu").click(function(){
-		console.log("Hi");
 		if(isShownBtmMenu == false){
-			$("#btm_menu").animate({top : "90%"}, {duration: 1000, easing: 'easeInOutBack'});
+			$("#btm_menu").animate({top : "80%"}, {duration: 1000, easing: 'easeInOutBack'});
 			isShownBtmMenu = true;
 		}
 
 		else{
-			$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
+			$("#btm_menu").animate({top : "120%"}, {duration: 1000, easing: 'easeInOutBack'});
 			isShownBtmMenu = false;
 		}
 	});
@@ -437,8 +433,8 @@ $(document).ready(function() {
 				dialogClass : "bottom_dialog",
 				modal : true,
 				resizable : true,
-				width : 800,
-				height : 770,
+				width : 500,
+				height : 370,
 				show : {
 					effect : "fade",
 					duration : 500
@@ -594,12 +590,13 @@ $(document).ready(function() {
 			//socket.emit("roon_in_init_draw", {project: _GLOBAL.project, id: _GLOBAL.id});
 
 			$("#dialog_select_project").dialog("close");
+			
 			$("#mini_popup_img").attr("src", "img/check.png");
 			$("#mini_popup_text").text("Loading Project Complete");
 			$("#mini_popup").fadeIn("slow", function() {
-					setTimeout(function() {
-						$("#mini_popup").fadeOut("slow");
-			}, pupup_time);});
+				setTimeout(function() {
+					$("#mini_popup").fadeOut("slow");
+				}, pupup_time);});
 		} else {
 			$("#mini_popup_img").attr("src", "img/not_check.png");
 				$("#mini_popup_text").text("Please Select a Project to open");
@@ -686,75 +683,78 @@ $(document).ready(function() {
 		$("#left_tree_hoverdItem").val($(e.target).attr('rel'));
 	});
 
-	$(function(){
-		$.contextMenu({
-			selector: "#left_tree",
-			items: {
-				"new_dir": {name: "New Directory", icon: "directory", callback: function(){
-					$("#dialog_makeDirFile").dialog({
-						dialogClass : "bottom_dialog",
-						modal : true,
-						resizable : true,
-						width : 350,
-						height : 250,
-						show : {
-							effect : "fade",
-							duration : 500
-						},
-						hide : {
-							effect : "fade",
-							duration : 500
-						},
-						open: function(){
-							__filePath = $("#left_tree_hoverdItem").val();
-						}
-					});
-				}},
-				"new_file": {name: "New File", icon: "file", callback: function(){
-					$("#dialog_makeDirFile2").dialog({
-						dialogClass : "bottom_dialog",
-						modal : true,
-						resizable : true,
-						width : 350,
-						height : 250,
-						show : {
-							effect : "fade",
-							duration : 500
-						},
-						hide : {
-							effect : "fade",
-							duration : 500
-						},
-						open: function(){
-							__filePath = $("#left_tree_hoverdItem").val();
-						}
-					});
-				}},
-				"delete": {name: "Delete", icon: "delete", callback: function(){
-					var ok = confirm("Delete?");
-					if(ok){
-						$.get('/delete_file?path=' + $("#left_tree_hoverdItem").val(), function(data, status){
-
-							console.log("client : " + data);
-
-							$("#mini_popup_img").attr("src", "img/check.png");
-							$("#mini_popup_text").text("Delete Complete");
-							$("#mini_popup").fadeIn("slow", function() {
-								setTimeout(function() {
-									$("#mini_popup").fadeOut("slow");
-								}, pupup_time);
-							});  
-
-							make_fileTree(fileTreePath);
-						});
-					}
-				}},
-				"sep1": "---------",
-				"refresh": {name: "Refresh", icon: "refresh", callback: function(){
-					make_fileTree(fileTreePath);
-				}}
-	        }
+	$("#ctx_newdir").click(function(){
+		$("#dialog_makeDirFile").dialog({
+			dialogClass : "bottom_dialog",
+			modal : true,
+			resizable : true,
+			width : 350,
+			height : 250,
+			show : {
+				effect : "fade",
+				duration : 500
+			},
+			hide : {
+				effect : "fade",
+				duration : 500
+			},
+			open : function() {
+				__filePath = $("#left_tree_hoverdItem").val();
+			}
 		});
+		$("#left_panel").panel("close");
+	});
+	
+	$("#ctx_newfile").click(function(){
+		$("#dialog_makeDirFile2").dialog({
+			dialogClass : "bottom_dialog",
+			modal : true,
+			resizable : true,
+			width : 350,
+			height : 250,
+			show : {
+				effect : "fade",
+				duration : 500
+			},
+			hide : {
+				effect : "fade",
+				duration : 500
+			},
+			open : function() {
+				__filePath = $("#left_tree_hoverdItem").val();
+			}
+		});
+		$("#left_panel").panel("close"); 
+	});
+	
+	$("#ctx_delete").click(function(){
+		var ok = confirm("Delete?");
+		if (ok) {
+			$.get('/delete_file?path=' + $("#left_tree_hoverdItem").val(), function(data, status) {
+
+				console.log("client : " + data);
+
+				$("#mini_popup_text").text("Delete Complete");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				});
+
+				make_fileTree(fileTreePath);
+			});
+		}
+		$("#left_panel").panel("close");
+	});
+	
+	$("#ctx_refresh").click(function(){
+		make_fileTree(fileTreePath);
+		$("#mini_popup_text").text("FileTree Refreshed");
+		$("#mini_popup").fadeIn("slow", function() {
+			setTimeout(function() {
+				$("#mini_popup").fadeOut("slow");
+			}, pupup_time);
+		}); 
 	});
 
 	$("#makeDirFile_btn").click(function(){
@@ -821,7 +821,7 @@ $(document).ready(function() {
 				modal : true,
 				resizable : false,
 				width : 360,
-				height : 460,
+				height : 400,
 				show : {
 					effect : "fade",
 					duration : 500
@@ -836,7 +836,7 @@ $(document).ready(function() {
 
 			$("#form_id").val(_GLOBAL.id);
 			$("#form_inv_project").val(_GLOBAL.project);
-			
+			$("#left_panel").panel("close");
 
 		}else if(menu == "Invitation List"){
 			$("#dialog_invitelist").dialog({
@@ -844,7 +844,7 @@ $(document).ready(function() {
 				modal : true,
 				resizable : false,
 				width : 360,
-				height : 460,
+				height : 260,
 				show : {
 					effect : "fade",
 					duration : 500
@@ -856,7 +856,7 @@ $(document).ready(function() {
 				beforeClose : function() {
 				}
 			});
-		
+			$("#left_panel").panel("close");
 			socket.emit("invitelist_request", _GLOBAL.id);	
 			
 		}else if(menu == "Logout"){
