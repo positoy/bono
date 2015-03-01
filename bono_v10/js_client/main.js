@@ -16,7 +16,10 @@ var __filePath;
 var pupup_time = 2000;
 // **************************** 2.26 ****************************
 
-
+////////////////
+// 포스트잇 붙이기
+////////////////
+var userIndexArray = [0,0,0,0];
 
 function getParameterByName(name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -27,7 +30,7 @@ function getParameterByName(name) {
 
 var add_flag = 0;
 
-	var editor;
+var editor;
 
 $(document).ready(function() {
 
@@ -40,27 +43,101 @@ $(document).ready(function() {
 
 
 
+	//=================================================================
+
+	//////////////////////////
+	// USER IN - 포스트잇 추가
+	//////////////////////////
+	//data : {project: _GLOBAL.project, id:_GLOBAL.id, file_name: file}
+	socket.on("room_in_response", function(data) {
+		var position = 0;
+
+		for(var i in userIndexArray) {
+			if(userIndexArray[i] == 0) {
+				position = i;
+				break;
+			}
+		}
+
+		if(position == 0) {
+			$("#user_0").css("visibility", "visible");
+			$("#user_0 > p").html(/*"&nbsp;&nbsp;&nbsp;&nbsp;" + */data.id);
+			userIndexArray[position] = 1;
+		} else if(position == 1) {
+			$("#user_1").css("visibility", "visible");
+			$("#user_1 > p").html("&nbsp;&nbsp;&nbsp;&nbsp;" + data.id);
+			userIndexArray[position] = 1;
+		} else if(position == 2) {
+			$("#user_2").css("visibility", "visible");
+			$("#user_2 > p").html("&nbsp;&nbsp;&nbsp;&nbsp;" + data.id);
+			userIndexArray[position] = 1;
+		}
+
+	});
+
+	/////////////////////////////////////////
+	// USER WORKLIST - 포스트잇에 workList추가
+	/////////////////////////////////////////
+
+	$(".users_label").click(function(e){
+		var t = e.target;
+		$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
+		var usr_id = $(t).parent().children("p").text();
+		
+		socket.emit("workList_request", {project: _GLOBAL.project, id: usr_id});	//usr_id제대로 바껴서 들어가는지 확인 ()
+	});
+
+	// data : CurrentProjectsArray[i].workArray
+	socket.on("workList_response", function(data) {
+		console.log("workList_response data check////////////////////////");
+		var str = "///WORKLIST///" ;
+		// 데이타 받아서 그려준다.
+		for(var i in data) 
+			str += ("\n" + data[i].work);
+
+		$("#user_contents_inner").text(str);
+	});
 
 
+			// //*************************//
+		 //    // room test
+		 //    //*************************//
+		 //    //SEND
+			// $("#btm_menu_subtract").click(function(){
+			// 	socket.emit("push_msg", {id: _GLOBAL.id, project: _GLOBAL.project});
+			// });
+
+			// //RECEIVE
+			// socket.on("get_msg", function(data) {
+			// 	alert(data.project + "에 변경사항!" + "\n" + data.id + "님이 push하셨습니다.");
+			// 	$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
+			// 		console.log("/makeGitTree complete");
+			// 		$("#git_tree_container").empty();
+			// 		$("#git_tree_container").append(data);
+			// 	});
+			// }); 
 
 
+	
+	$(".users > p").mouseenter(function(e){
+		var pos = $(e.target).parent().position();
+		$("#user_contents").css("top", pos.top);
+		$("#user_contents").removeClass("uc_off");
+		$("#user_contents").addClass("uc_on");
+	});
+	
+	$(".users > p").mouseleave(function(e){
+		$("#user_contents").removeClass("uc_on");
+		$("#user_contents").addClass("uc_off");
+		var t = e.target;
+		$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
+	});
 
 
+	//=================================================================
 
 
-
-
-
-
-
-
-//	user in...
-
-	$("#user_1").css("visibility", "visible");
-	$("#user_1 > p").html("&nbsp;&nbsp;&nbsp;&nbsp;" + "cwlsn88");
-
-
-// for junseok
+	// for junseok
 	$("#btm_menu_apk").click(function(){
 		alert("APK!");
 	});
@@ -808,33 +885,33 @@ $(document).ready(function() {
 
 
 
-	$(".users_label").click(function(e){
-		var t = e.target;
-		$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
+	// $(".users_label").click(function(e){
+	// 	var t = e.target;
+	// 	$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
 
 
 
 		
-		var usr_id = $(t).parent().children("p").text();
-		$("#user_contents_inner").text(usr_id + "work array");
+	// 	var usr_id = $(t).parent().children("p").text();
+	// 	$("#user_contents_inner").text(usr_id + "work array");
 
 
 
-	});
+	// });
 	
-	$(".users > p").mouseenter(function(e){
-		var pos = $(e.target).parent().position();
-		$("#user_contents").css("top", pos.top);
-		$("#user_contents").removeClass("uc_off");
-		$("#user_contents").addClass("uc_on");
-	});
+	// $(".users > p").mouseenter(function(e){
+	// 	var pos = $(e.target).parent().position();
+	// 	$("#user_contents").css("top", pos.top);
+	// 	$("#user_contents").removeClass("uc_off");
+	// 	$("#user_contents").addClass("uc_on");
+	// });
 	
-	$(".users > p").mouseleave(function(e){
-		$("#user_contents").removeClass("uc_on");
-		$("#user_contents").addClass("uc_off");
-		var t = e.target;
-		$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
-	});
+	// $(".users > p").mouseleave(function(e){
+	// 	$("#user_contents").removeClass("uc_on");
+	// 	$("#user_contents").addClass("uc_off");
+	// 	var t = e.target;
+	// 	$(t).parent().toggleClass("users_open", 700, 'easeInOutBack');
+	// });
 
 
 
