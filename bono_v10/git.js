@@ -363,7 +363,7 @@ exports.upload = function(project_name, user_name, user_email, handler) {
 		var cmd2 = "for i in `find . \( -name '*.java' -o  -name '*.properties' -o\) -print` ; do ../../../user_data/build/e2u.sh $i ; done"
 		//var cmd3 = "cd .."
 		var cmd3 = "find . -name '*.tmp' -exec rm {} " + "\\" + ";"
-		var cmd4 = "cd ../"
+		var cmd4 = "cd .."
 		var cmd5 = "mv * ../../user_data/projects/" + project_name + "/_" + user_name + "/";
 
 		var cmd = cmd1 + " ; " + cmd2 + ' ; ' + cmd3 + ' ;' + cmd4 + ';' + cmd5;
