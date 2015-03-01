@@ -349,9 +349,35 @@ app.get('/btm_menu_export', function(request, response){
 			//response.download);
 		}
 	});
+});
 
+//apk
+app.get('/btm_menu_apk', function(request, response){
 
+	var context = "[/btm_menu_apk] : ";
+
+	console.log(context, "connected");
+
+	var user_id = request.param("id");
+	var project_name = request.param("project");
+
+	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/";
+	var Apk_name = user_id+"-release.apk";	
+	console.log(path);
 	
+	var child = exec("cd " + path +";", function(err, stdout ,stderr){
+ 		if (err === null)
+		{
+			console.log(context, "	successful");
+			response.download(path + Apk_name);
+		}
+		else
+		{
+			console.log(context, "error");
+			sys.print('stderr : ' + stderr);
+			//response.download);
+		}
+	});
 });
 //import
 app.post('/upload',function(req,res){//import zipfile
@@ -717,7 +743,7 @@ app.post('/file_save', function(req, res){
 			{
 				console.log( "compile successful</br><br/>");
 				sys.print('stdout : '+ stdout);
-				res.send("Compile Success!!!!!");
+				res.send("Compile Success!!!!!</br><br/>");
 			}
 			else
 			{	
@@ -841,7 +867,7 @@ app.post('/file_save', function(req, res){
 			}
 			else{
 
-				if(stdout.search("task3"===-1)){//androidmanifext.xml error
+				if(stdout.search("task3")===-1){//androidmanifext.xml error
 					stdout = stdout.replace(/(\r\n|\r|\n|\^)/gm,"");
 					stdout = stdout.replace(/(\s{2,})/g,' ');	
 					var _tmp = stdout.split("[gettarget] ");
@@ -855,7 +881,7 @@ app.post('/file_save', function(req, res){
 					//res.send(_ParseLog);
 				}
 				else{
-					var start = stdout.search("[task3]");
+					var start = stdout.search("task3");
 					stdout = stdout.substring(start,stdout.length);
 					console.log(stdout);
 					
