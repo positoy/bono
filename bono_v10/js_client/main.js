@@ -931,6 +931,7 @@ $(document).ready(function() {
 		var git_case = $(this).attr('title');
 		if(git_case == "commit"){
 			var inputString = prompt("커밋메세지를 입력하세요.","commit message");
+			editor.setReadOnly(true);
 			socket.emit("commit", {id: _GLOBAL.id, project: _GLOBAL.project, m: inputString});
 			$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
 				tttt++;
