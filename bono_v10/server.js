@@ -361,14 +361,15 @@ app.get('/btm_menu_apk', function(request, response){
 	var user_id = request.param("id");
 	var project_name = request.param("project");
 
-	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/"+project_name+"-release.apk";	
+	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/";
+	var Apk_name = user_id+"-release.apk";	
 	console.log(path);
 	
 	var child = exec("cd " + path +";", function(err, stdout ,stderr){
  		if (err === null)
 		{
 			console.log(context, "	successful");
-			response.download(path1);
+			response.download(path + Apk_name);
 		}
 		else
 		{
