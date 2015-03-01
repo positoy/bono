@@ -752,7 +752,7 @@ function invitation_invite_ (user_id, inv_id, inv_project, inv_msg, project_invi
 function invitation_list(user_id, invitelist_request_handler, socket) {
 
   var context = "[/project_invitelist, DB] : ";
-  var query = connection.query('SELECT projectinfo.project_name AS "name", projectinfo.description AS "desc", invitation.invited_user AS "user" FROM projectinfo LEFT JOIN invitation ON projectinfo.project_name = invitation.inv_project WHERE invitation.invited_user = ?', user_id,
+  var query = connection.query('SELECT projectinfo.project_name AS "name", projectinfo.description AS "desc", invitation.inviting_user AS "user" FROM projectinfo LEFT JOIN invitation ON projectinfo.project_name = invitation.inv_project WHERE invitation.invited_user = ?', user_id,
   	
   	function(err,rows) {
 
