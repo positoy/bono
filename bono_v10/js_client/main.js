@@ -99,25 +99,6 @@ $(document).ready(function() {
 	});
 
 
-			// //*************************//
-		 //    // room test
-		 //    //*************************//
-		 //    //SEND
-			// $("#btm_menu_subtract").click(function(){
-			// 	socket.emit("push_msg", {id: _GLOBAL.id, project: _GLOBAL.project});
-			// });
-
-			// //RECEIVE
-			// socket.on("get_msg", function(data) {
-			// 	alert(data.project + "에 변경사항!" + "\n" + data.id + "님이 push하셨습니다.");
-			// 	$.get('/makeGitTree?path=' +_GLOBAL.project+ "&id=" +_GLOBAL.id, function(data, status){
-			// 		console.log("/makeGitTree complete");
-			// 		$("#git_tree_container").empty();
-			// 		$("#git_tree_container").append(data);
-			// 	});
-			// }); 
-
-
 	
 	$(".users > p").mouseenter(function(e){
 		var pos = $(e.target).parent().position();
@@ -141,36 +122,6 @@ $(document).ready(function() {
 	$("#btm_menu_apk").click(function(){
 		alert("APK!");
 	});
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1262,6 +1213,9 @@ $(document).ready(function() {
                     console.log("selected NO: ", liSelected.val())
 
                     var targetMethod = ac.list[liSelected.val()];
+
+                    if (ac.nameStarts != null)
+                    	targetMethod.name = targetMethod.name.split(ac.nameStarts)[1];
                     editor.moveCursorTo(ac.cursor.row, ac.cursor.column);
                     editor.insert(targetMethod.name + targetMethod.arr[1]); 
                     console.log("hideBox", "display:none");
@@ -1308,7 +1262,4 @@ $(document).ready(function() {
 
     });
     
-    
-    ////////////////////////////////////////////
-	
 });
