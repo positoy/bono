@@ -435,88 +435,85 @@ app.get('/btm_menu_run', function(request, response){
 	console.log(_GLOBAL.cur_project_target);
 	console.log(path);
 
-	fs.readFile(path+"/test.keystore", 'utf8',
+	function process_after_attach(err)
+	{
+		console.log('File write completed');
+		// 빌드 끝내고 apk 파일도 전송해 줘야함.
+
+		var child = exec("cd " + path +"; "+ " ant clean release",
+
+			function(err, stdout ,stderr)
+			{
+				if (err === null)
+				{
+					console.log(context, "	successful");
+					//sys.print('stdout : '+ stdout);
+					response.send("Run Success!!!!!");
+					//response.download(path1);
+				}
+				else
+				{
+					console.log(context, "error");
+					sys.print('stderr : ' + stderr);
+					response.send(stderr);
+				}
+			});
+	}
+
+	function build_process(err, stdout, stderr)
+	{
+		var filecontent, key_none;
+
+		//local.properties update
+		fs.readFile(path + "/local.properties", 'utf8',
+
+			function(err, fd)
+			{
+				console.log(path + "/local.properties");
+				//console.log("read success\n"+fd);
+
+				if (err)
+				{
+					throw err;
+				}
+				else
+				{
+					filecontent = fd;
+				
+					//console.log("change\n"+filecontent);
+		  			key_none = filecontent.search("#key");
+		  			console.log("key is " + key_none);
+		  			
+		  			if (key_none === -1)
+		  			{
+		  				filecontent = filecontent + "#key\nkey.store=./test.keystore\nkey.alias=test\nkey.store.password=helloworld\nkey.alias.password=helloworld\n";
+		  				console.log("change\n"+filecontent);
+
+		  				fs.writeFile(path + "/local.properties", filecontent, process_after_attach);
+		  			}
+		  			else
+		  			{
+		  				process_after_attach(null);
+		  			}
+				}
+		  	});
+	}
+
+	//local.properties update
+	fs.readFile(path + "/test.keystore", 'utf8',
 
 		function(err, data)
 		{
-	  		if (err)
+			if (err)
+			{
+				// when keystore not exist, copy and proceed to build process.
+				var cmd = "cp user_data/build/test.keystore " + path + "/test.keystore";
+				var key = exec(cmd, build_process);
+			}
+	  		if (!err)
 	  		{
-	  			var cmd = "cp ./user_data/build/test.keystore " + path+"/test.keystore";
-	  			var key = exec(cmd, function(error, stdout, stderr) {
-
-					if (error !== null)
-					{
-						console.log(error);
-						response.send("fail");
-					}
-					else
-					{
-						console.log(context, "key successful-", cmd);
-
-						var filecontent, key_none;
-
-						//local.properties update
-						fs.readFile(path + "/local.properties", 'utf8',
-
-							function(err, fd)
-							{
-								console.log(path + "/local.properties");
-								//console.log("read success\n"+fd);
-
-								if (err)
-								{
-									throw err;
-								}
-								else
-								{
-									filecontent = fd;
-								
-									//console.log("change\n"+filecontent);
-						  			key_none = filecontent.search("#key");
-						  			console.log("key is " + key_none);
-						  			
-						  			if (key_none === -1)
-						  			{
-						  				filecontent = filecontent + "#key\nkey.store=./test.keystore\nkey.alias=test\nkey.store.password=helloworld\nkey.alias.password=helloworld\n";
-						  				console.log("change\n"+filecontent);
-
-						  				fs.writeFile(path + "/local.properties", filecontent,
-
-						  					function(err)
-						  					{
-						  						if (err)
-						  						{
-						  							throw err;
-						  						}
-						  						else
-						  						{
-						  							console.log('File write completed');
-						  							// 빌드 끝내고 apk 파일도 전송해 줘야함.
-													var child = exec("cd " + path +"; "+ " ant clean release",
-
-														function(err, stdout ,stderr)
-														{
-															if (err === null)
-															{
-																console.log(context, "	successful");
-																//sys.print('stdout : '+ stdout);
-																response.send("Run Success!!!!!");
-																//response.download(path1);
-															}
-															else
-															{
-																console.log(context, "error");
-																sys.print('stderr : ' + stderr);
-																response.send(stderr);
-															}
-														});
-					  							} 
-											});
-						  			}
-								}
-						  	});
-					}
-				});
+	  			// keystore already exists, proceed to build process.
+	  			build_process();
 	  		}
 	  	});
 });
