@@ -404,7 +404,36 @@ $(document).ready(function() {
 		$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
 			isShownBtmMenu = false;
 		$.get("/btm_menu_run?id=" + _GLOBAL.id + "&project=" + _GLOBAL.project, function(data, status){
-			alert(data);
+			//alert(data);
+/*			if(data == "success"){
+				$("#mini_popup_img").attr("src", "img/check.png");
+				$("#mini_popup_text").text("Run Project Successed");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				$("#right_log_inner").append(data);
+				});
+			}
+			else(data == "fail"){
+				$("#mini_popup_img").attr("src", "img/not_check.png");
+				$("#mini_popup_text").text("Run Project Failed");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				$("#right_log_inner").append(data);
+				});
+			}*/
+				$("#mini_popup_img").attr("src", "img/check.png");
+				$("#mini_popup_text").text("Run Project Successed");
+				$("#mini_popup").fadeIn("slow", function() {
+					setTimeout(function() {
+						$("#mini_popup").fadeOut("slow");
+					}, pupup_time);
+				$("#right_log_inner").append(data);
+				});
+			make_fileTree(fileTreePath); 
 		});
 	});
 	///////////////
