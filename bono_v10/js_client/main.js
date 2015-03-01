@@ -42,18 +42,6 @@ $(document).ready(function() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //	user in...
 
 	$("#user_1").css("visibility", "visible");
@@ -64,36 +52,6 @@ $(document).ready(function() {
 	$("#btm_menu_apk").click(function(){
 		alert("APK!");
 	});
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1178,6 +1136,9 @@ $(document).ready(function() {
                     console.log("selected NO: ", liSelected.val())
 
                     var targetMethod = ac.list[liSelected.val()];
+
+                    if (ac.nameStarts != null)
+                    	targetMethod.name = targetMethod.name.split(ac.nameStarts)[1];
                     editor.moveCursorTo(ac.cursor.row, ac.cursor.column);
                     editor.insert(targetMethod.name + targetMethod.arr[1]); 
                     console.log("hideBox", "display:none");
@@ -1224,7 +1185,4 @@ $(document).ready(function() {
 
     });
     
-    
-    ////////////////////////////////////////////
-	
 });
