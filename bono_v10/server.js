@@ -349,9 +349,34 @@ app.get('/btm_menu_export', function(request, response){
 			//response.download);
 		}
 	});
+});
 
+//apk
+app.get('/btm_menu_apk', function(request, response){
 
+	var context = "[/btm_menu_apk] : ";
+
+	console.log(context, "connected");
+
+	var user_id = request.param("id");
+	var project_name = request.param("project");
+
+	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/"+project_name+"-release.apk";	
+	console.log(path);
 	
+	var child = exec("cd " + path +";", function(err, stdout ,stderr){
+ 		if (err === null)
+		{
+			console.log(context, "	successful");
+			response.download(path1);
+		}
+		else
+		{
+			console.log(context, "error");
+			sys.print('stderr : ' + stderr);
+			//response.download);
+		}
+	});
 });
 //import
 app.post('/upload',function(req,res){//import zipfile

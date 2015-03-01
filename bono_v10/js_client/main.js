@@ -395,6 +395,13 @@ $(document).ready(function() {
 		isShownBtmMenu = false;
 	});	
 
+	$("#btm_menu_apk").click(function(){
+		$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
+		isShownBtmMenu = false;
+		window.location = "/btm_menu_apk?id=" + _GLOBAL.id + "&project=" + _GLOBAL.project;
+	});
+	
+
 	///////////////
 	$("#dialog_select_project_proj").scroll();
 

@@ -425,7 +425,7 @@ exports.upload = function(project_name, user_name, user_email, handler) {
 	var task7 = function(sdk_version, callback) {
 
 		var cmd1 = "cd " + DIR_PROJECT_USER;
-		var cmd2 = "android update project -p . -t "+ sdk_version;
+		var cmd2 = "android update project -n " + user_name + " -p . -t "+ sdk_version;
 		var cmd3 = "cd ../appcompat_v7"
 		var cmd4 = "android update project -p . -t "+ sdk_version;
 
