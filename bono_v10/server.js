@@ -743,7 +743,7 @@ app.post('/file_save', function(req, res){
 			{
 				console.log( "compile successful</br><br/>");
 				sys.print('stdout : '+ stdout);
-				res.send("Compile Success!!!!!");
+				res.send("Compile Success!!!!!</br><br/>");
 			}
 			else
 			{	
@@ -867,7 +867,7 @@ app.post('/file_save', function(req, res){
 			}
 			else{
 
-				if(stdout.search("task3"===-1)){//androidmanifext.xml error
+				if(stdout.search("task3")===-1){//androidmanifext.xml error
 					stdout = stdout.replace(/(\r\n|\r|\n|\^)/gm,"");
 					stdout = stdout.replace(/(\s{2,})/g,' ');	
 					var _tmp = stdout.split("[gettarget] ");
@@ -881,7 +881,7 @@ app.post('/file_save', function(req, res){
 					//res.send(_ParseLog);
 				}
 				else{
-					var start = stdout.search("[task3]");
+					var start = stdout.search("task3");
 					stdout = stdout.substring(start,stdout.length);
 					console.log(stdout);
 					
