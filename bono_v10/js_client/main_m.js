@@ -369,7 +369,10 @@ $(document).ready(function() {
 					$(e.target).removeClass("file_notSelected");
 					$(e.target).addClass("file_selected");
 
-					alert("_work_flag:::: " + _work_flag);
+					//alert("_work_flag:::: " + _work_flag);
+					if(work_flag == 1) {
+						alert("다른 사용자가 수정중 입니다.");
+					}
 					make_editor(data, file_path, 0, _work_flag);
 
 				}
@@ -619,8 +622,20 @@ $(document).ready(function() {
 	// data.works = CurrentProjectsArray[i].workArray;
 	socket.on("room_in_init_draw", function(data) {
 		//alert("오나?!?!");
-		alert(data.works);
+		//***************************alert(data.works);//****얘 여러번옴. 추후 수정 요. ()
 		var position = 0;
+
+
+			//$("#user_container > div").each(function(index2){
+		 	//console.log(filePathArr[filePathArr.length - 1] + "/" + $(this).text().slice(1, $(this).text().length));
+		 	//var tmp = $(this).children("p").text();
+
+			// if(data.works[index].name == tmp){
+			// 	//이미 그려진 애가 있으면 그리지마라
+			// } else {
+			// 	//그려진 애가 없을 때, 그려준다.
+			//****************************************
+
 		for(var index in data.works)
 		{
 			//작업중이던 다른 사용자를 찾아서
@@ -637,19 +652,26 @@ $(document).ready(function() {
 					$("#user_0").css("visibility", "visible");
 					$("#user_0 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 1) {
 					$("#user_1").css("visibility", "visible");
 					$("#user_1 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 2) {
 					$("#user_2").css("visibility", "visible");
 					$("#user_2 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 3) {
 					$("#user_3").css("visibility", "visible");
 					$("#user_3 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				}
+				//******************************************
+				// 	}				
+				// });
 			
 			}
 
