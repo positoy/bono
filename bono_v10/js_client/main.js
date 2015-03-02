@@ -110,7 +110,7 @@ $(document).ready(function() {
 			//console.log(filePathArr[filePathArr.length - 1] + "/" + $(this).text().slice(1, $(this).text().length));
 			var tmp = $(this).children("p").text();
 			if(id_data == tmp){
-				alert(index + "!!!!");
+				//alert(index + "!!!!");  //******지워지는index찍는부분
 				userIndexArray[index] = 0;
 
 				if(index == 0) {	
