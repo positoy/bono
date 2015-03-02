@@ -30,7 +30,7 @@ var unzip = require('unzip');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 
-// ************************************* 2.26 ******************************
+// ************************************* 2.26 ******************************f
 // rimraf - delete dir recursive
 var rimraf = require('rimraf');
 // ************************************* 2.26 ******************************
@@ -403,7 +403,7 @@ app.get('/btm_menu_apk', function(request, response){
 	var project_name = request.param("project");
 
 	var path = "./user_data/projects/" + project_name + "/_" + user_id + "/bin/";
-	var Apk_name = project_name+"-release.apk";	
+	var Apk_name = user_id +"-release.apk";	
 	console.log(path);
 	
 	var child = exec("cd " + path +";", function(err, stdout ,stderr){
