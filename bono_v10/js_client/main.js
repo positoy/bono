@@ -574,6 +574,9 @@ $(document).ready(function() {
 				editor.container.remove();
 
 			make_fileTree(fileTreePath);
+			
+			$("#left_project_name").css("visibility", "visible");
+			$("#left_project_name").text(_GLOBAL.project);
 
 		    //*************************//
 		    // Switch the room 
