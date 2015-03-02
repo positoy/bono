@@ -288,6 +288,19 @@ function draw_handler(_finalObject, res) {
 	console.log(context, "origin_length- ", _finalObject.originLogTreeArray.length + "\n" + "user_length- ", _finalObject.userLogTreeArray.length + "\n");
 	console.log("_finalObject: " + "\n" + JSON.stringify(_finalObject));
 
+	//log_diff_cnt 동작 ////////////////////////////////////
+	// for(idx in _finalObject.originLogTreeArray)
+	// {
+	// 	if(_finalObject.originLogTreeArray[idx].commit_hash !== _finalObject.my_position) 
+	// 	{
+	// 		log_diff_cnt++;
+	// 	}	
+	// 	else
+	// 	{
+	// 		break;
+	// 	}
+	// }
+	/////////////////////////////////////////////////////////
 
 	if(_finalObject.originLogTreeArray.length <= _finalObject.userLogTreeArray.length) 
 	{	
