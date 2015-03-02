@@ -648,7 +648,7 @@ $(document).ready(function() {
 			}
 		});
 		
-		alert("uniqueIds::" + uniqueIds);
+		//alert("uniqueIds::" + uniqueIds);
 
 		//for(var index in data.works)
 		for(var index in uniqueIds)
