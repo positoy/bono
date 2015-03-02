@@ -637,39 +637,65 @@ $(document).ready(function() {
 			// } else {
 			// 	//그려진 애가 없을 때, 그려준다.
 			//****************************************
+		var tempArray = [];
+		for(var p in data.works) {
+			tempArray.push(data.works[p].name);
+		} // 이름만 다 넣어줌
 
-		for(var index in data.works)
+		//다른애만 그려주기 위한 절차
+		var uniqueIds = [];
+		$.each(tempArray, function(i, el) {
+			if($.inArray(el, uniqueIds) === -1) {
+				uniqueIds.push(el);
+			}
+		});
+		
+		alert("uniqueIds::" + uniqueIds);
+
+		//for(var index in data.works)
+		for(var index in uniqueIds)
 		{
 			//작업중이던 다른 사용자를 찾아서
-			if(data.works[index].name != data.id)
+			// (나를 제외한 다른 사용자들이면)
+			//if(data.works[index].name != data.id)
+			if(uniqueIds[index] != data.id)
 			{
+				//이미 그린 애와 같은 사람인지 확인해서, 다를때만 그린다.
+				// var uniqueIds = [];
+				// $.each(tempArray, function(i, el) {
+				// 	if($.inArray(el, uniqueIds) === -1) {
+				// 		uniqueIds.push(el);
+				// 	}
+				// });
+				
+				//빈자리를 찾는다
 				for(var i in userIndexArray) {
 					if(userIndexArray[i] == 0) {
 						position = i;
 						break;
 					}
 				}
-
+				//그 빈자리에 그려준다.
 				if(position == 0) {	
 					$("#user_0").css("visibility", "visible");
-					$("#user_0 > p").html(data.works[index].name);
+					$("#user_0 > p").html(uniqueIds[index]);
 					userIndexArray[position] = 1;
-					break;
+					//break;
 				} else if(position == 1) {
 					$("#user_1").css("visibility", "visible");
-					$("#user_1 > p").html(data.works[index].name);
+					$("#user_1 > p").html(uniqueIds[index]);
 					userIndexArray[position] = 1;
-					break;
+					//break;
 				} else if(position == 2) {
 					$("#user_2").css("visibility", "visible");
-					$("#user_2 > p").html(data.works[index].name);
+					$("#user_2 > p").html(uniqueIds[index]);
 					userIndexArray[position] = 1;
-					break;
+					//break;
 				} else if(position == 3) {
 					$("#user_3").css("visibility", "visible");
-					$("#user_3 > p").html(data.works[index].name);
+					$("#user_3 > p").html(uniqueIds[index]);
 					userIndexArray[position] = 1;
-					break;
+					//break;
 				}
 				//******************************************
 				// 	}				
