@@ -367,7 +367,10 @@ $(document).ready(function() {
 					$(e.target).removeClass("file_notSelected");
 					$(e.target).addClass("file_selected");
 
-					alert("_work_flag:::: " + _work_flag);
+					//alert("_work_flag:::: " + _work_flag);
+					if(work_flag == 1) {
+						alert("다른 사용자가 수정중 입니다.");
+					}
 					make_editor(data, file_path, 0, _work_flag);
 
 				}
@@ -617,7 +620,7 @@ $(document).ready(function() {
 	// data.works = CurrentProjectsArray[i].workArray;
 	socket.on("room_in_init_draw", function(data) {
 		//alert("오나?!?!");
-		alert(data.works);
+		//***************************alert(data.works);//****얘 여러번옴. 추후 수정 요. ()
 		var position = 0;
 
 
