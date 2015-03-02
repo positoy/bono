@@ -1400,26 +1400,94 @@ $(document).ready(function() {
     var li, liSelected;
     function hdlr_showBox(e)
     {
-        console.log("showBox", e.which);
-        if (e.ctrlKey)
+    	if (e.ctrlKey)
         {
-            console.log("ctrl on");
             if (e.which == 13)
             {
-		        ac.cursor = editor.selection.getCursor()
-                // 서버에 메소드 리스트 요청하기
+            	ac.cursor = editor.selection.getCursor()
+		        
+		        // 서버에 메소드 리스트 요청하기
 
 				var code = editor.getValue().trim();
 				var current_line = editor.session.getLine(editor.selection.getCursor().row).substr(0, editor.selection.getCursor().column).trim();
 
-				ac.requestMethods(ac.getClass(code, current_line));
-                
-            }
+				console.log("[current line] :", current_line);
+				
+				// 클래스인지 메소드인지 판단하기
+				var arr = [];
+				arr.push(current_line.lastIndexOf(';'));
+				arr.push(current_line.lastIndexOf('{'));
+				arr.push(current_line.lastIndexOf('}'));
+				arr.push(current_line.lastIndexOf('('));
+				arr.push(current_line.lastIndexOf('\n'));
+				arr.push(current_line.lastIndexOf(' '));
+				
+				console.log("[array] : ", arr);
+					
+				var target = current_line.substr(Math.max.apply(null, arr) + 1);
+				
+				console.log("[target] : ", target);
+				
+				////////////////////////////////////
+				//	자동완성 알고리즘
+				////////////////////////////////////
+				
+				var target_split_dot_arr = target.split('.');
+				console.log(target_split_dot_arr);
+				
+				switch( target_split_dot_arr.length )
+				{
+					
+					// target이 '.' 포함하지 않으면 클래스
+					case 1:
+						// 대문자로 시작 - lists.js 조회
+						if (target[0] <= 'Z' && target[0] >= 'A')
+						{
+							ac.list = [];
+							ac.nameStarts = target;
+							
+							for (var i=0; i<ac.DATA.length; i++)
+							{
+								var arr = ac.DATA[i].label.split('.');
+							    var className = arr[arr.length - 1];
+							    
+							    if (className.search(target) == 0)
+							    	ac.list.push( { name: className, arr: ["", ""] } );
+					    	}
+						}
+						// 소문자로 시작 - 문서 내 조회
+						else if (target[0] <= 'z' && target[0] >= 'a')
+						{
+							ac.list = [];
+							
+						}
+						else
+						{
+							console.log("exception! 클래스인 것 같은데 대문자도 아니고 소문자도 아님")						
+						}
+						
+						// 창 띄워주기
+						$("#methods_list").empty();
+				    	for (var i=0; i<ac.list.length; i++)
+						{
+							$("#methods_list").append($("<li>").val(i).html(ac.list[i].arr[0] + ' ' + ac.list[i].name + ' ' + ac.list[i].arr[1]));
+						}	
+				    	$('#autocomplete_listbox').css("display", "block");
+						
+						break;
+					
+					// target이 '.' 포함하면 메소드 ; api 사용				
+					case 2:
+						ac.requestMethods(ac.getClass(code, current_line));
+						break;
+					
+				}
+				
+	        }
         }
         else if ($('#autocomplete_listbox').css('display') != "none")
         {
-            console.log("ctrl off");
-            li = $('#autocomplete_listbox li');
+        	li = $('#autocomplete_listbox li');
             
             console.log(li);
             
