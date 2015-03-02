@@ -370,6 +370,8 @@ $(document).ready(function() {
 					//alert("_work_flag:::: " + _work_flag);
 					if(work_flag == 1) {
 						alert("다른 사용자가 수정중 입니다.");
+					} else {
+						alert("수정 가능한 파일입니다.");
 					}
 					make_editor(data, file_path, 0, _work_flag);
 
