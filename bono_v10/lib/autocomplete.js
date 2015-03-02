@@ -56,8 +56,7 @@ ac.parseImports = function(code) {       // 코드에 포함된 imports들을 ac
 
 // 현재 커서가 위치한 라인에 해당하는 클래스를 구함
 ac.getClass = function(code, current_line) {
-    
-    console.log("[code]", code);
+
     console.log("[current line]", current_line);
 
     var split_dot = current_line.split('.');
@@ -70,25 +69,53 @@ ac.getClass = function(code, current_line) {
     else
     	this.nameStarts = split_dot[split_dot.length - 1];
     
-    console.log("THIS", this.nameStarts)
-    console.log("AC", ac.nameStarts)
-    // 앞에 불필요한 것 지우기 ex) fucntion(variable.
-    var split_left = split_space[split_space.length - 1].split('(');
-    lastItem = split_left[split_left.length -1].trim();
-
-    console.log("lastItem", lastItem);
+    ////// 클래스 변수 뽑기
     
-    var right_border = code.search(' ' + lastItem + ';');
-    var code_arr = code.substr(0, right_border).split(' ');
+	// 클래스인지 메소드인지 판단하기
+	var arr = [];
+	arr.push(current_line.lastIndexOf(';'));
+	arr.push(current_line.lastIndexOf('{'));
+	arr.push(current_line.lastIndexOf('}'));
+	arr.push(current_line.lastIndexOf('('));
+	arr.push(current_line.lastIndexOf('\n'));
+	arr.push(current_line.lastIndexOf(' '));
+	
+	console.log("[array] : ", arr);
+		
+	var target = current_line.substr(Math.max.apply(null, arr) + 1);
+	
+	console.log("[target] : ", target);
+	
+	////////////////////////////////////
+	//	자동완성 알고리즘
+	////////////////////////////////////
+	
+	var target_split_dot_arr = target.split('.');
+	
+	console.log("클래스 변수 명 : ", target_split_dot_arr[0]);
     
-    for (var i=code_arr.length-1; i>=0; i--)
-    {
-    	if (code_arr[i] != "")
-    	{
-    		console.log("found the class! : ", code_arr[i]);
-    		return code_arr[i];
-		}
-    }
+    var right_border = code.search(' ' + target_split_dot_arr[0] + ';');
+    var codesplit1 = code.substr(0, right_border).trim();
+    
+    var left_searching_arr = [];
+    left_searching_arr.push(codesplit1.lastIndexOf(';'));
+	left_searching_arr.push(codesplit1.lastIndexOf('{'));
+	left_searching_arr.push(codesplit1.lastIndexOf('}'));
+	left_searching_arr.push(codesplit1.lastIndexOf('('));
+	left_searching_arr.push(codesplit1.lastIndexOf('\n'));
+	left_searching_arr.push(codesplit1.lastIndexOf(' '));
+	
+	console.log("[left_searching_arr] : ", left_searching_arr);
+	
+	console.log("codesplit1:\n", codesplit1);
+	console.log("codesplit1 length:", codesplit1.length);
+	console.log("left_cutter:", Math.max.apply(null,left_searching_arr) + 1);
+	
+	var codesplit2 = codesplit1.substr(Math.max.apply(null,left_searching_arr) + 1);
+	var classname = codesplit2.trim();
+    
+    console.log("CLASS FOUND : ", classname);
+    return classname;
 }
 
 
