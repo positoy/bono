@@ -619,6 +619,18 @@ $(document).ready(function() {
 		//alert("오나?!?!");
 		alert(data.works);
 		var position = 0;
+
+
+			//$("#user_container > div").each(function(index2){
+		 	//console.log(filePathArr[filePathArr.length - 1] + "/" + $(this).text().slice(1, $(this).text().length));
+		 	//var tmp = $(this).children("p").text();
+
+			// if(data.works[index].name == tmp){
+			// 	//이미 그려진 애가 있으면 그리지마라
+			// } else {
+			// 	//그려진 애가 없을 때, 그려준다.
+			//****************************************
+
 		for(var index in data.works)
 		{
 			//작업중이던 다른 사용자를 찾아서
@@ -635,19 +647,26 @@ $(document).ready(function() {
 					$("#user_0").css("visibility", "visible");
 					$("#user_0 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 1) {
 					$("#user_1").css("visibility", "visible");
 					$("#user_1 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 2) {
 					$("#user_2").css("visibility", "visible");
 					$("#user_2 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				} else if(position == 3) {
 					$("#user_3").css("visibility", "visible");
 					$("#user_3 > p").html(data.works[index].name);
 					userIndexArray[position] = 1;
+					break;
 				}
+				//******************************************
+				// 	}				
+				// });
 			
 			}
 
