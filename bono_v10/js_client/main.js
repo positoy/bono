@@ -62,9 +62,6 @@ $(document).ready(function() {
 
 
 
-
-
-
 	//로그인 처음 되면 리빙룸에 있도록 in
 	socket.emit("in",{id: _GLOBAL.id});
 	
