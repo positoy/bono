@@ -5,10 +5,10 @@ var git = require('./git.js');
 module.exports = function() {
 
     connection = mysql.createConnection({
-        host : 'localhost',	//**********이부분 체크 (V)
+        host : 'localhost',	
         port : 3306,		//mysql 통신포트
         user : 'root',
-        password : 'bonobono',		//멤섹션: bonomaha, 집: mahabono, 창규오빠: bonobono
+        password : 'bonobono',		
         database : 'mainbono'
     });
 
@@ -267,24 +267,9 @@ function userproject_list_(user_id, projectlist_request_handler, res) {
 /*******************************************************************************
  JOIN
  : 초대 수락 => 프로젝트에 참여 기능
-
- // 시나리오A.  사용자가 원하는 프로젝트명을 직접 입력해서 참여 요청.
- // 시나리오B.  사용자가 초대에 수락해서 프로젝트에 참여.
- //            1. 프로젝트가 존재하는지 검사
- //            2. 사용자의 이메일주소 받아오기
- //            3. REMOTE. 폴더생성, git clone
- //            4. userproject에 프로젝트 추가하기
- //            5. invitation 테이블에서 동일한 이름의 프로젝트 제거하기
- //               (user.invitation.delete_invitation 사용하면 userproject 자동토글
  *******************************************************************************/
 function userproject_join_ (obj, pjoin_handler, socket) {
 
-    // 0. db : 프로젝트가 존재하는지 검사
-    // 1. db : 사용자의 이메일주소 받아오기
-    // 2. git : 폴더생성 & git clone
-    // 3. db : insert into userproject
-
-    // 0. db : 프로젝트가 존재하는지 검사
     var query = connection.query("SELECT project_name FROM projectinfo WHERE project_name=?", obj.project_name,
         function(err, rows) {
             if(err) {
@@ -346,15 +331,6 @@ function userproject_join_ (obj, pjoin_handler, socket) {
 /*    projectinfo    */
 /*********************************************************
  CREATE_PROJECT
- : project 추가 기능
-
- // 동일한 이름의 프로젝트가 이미 존재하는지 확인
- // 존재하지 않으면 사용자 이메일 얻어오기
- // ORIGIN. 새로운 폴더 생성, git init
- // REMOTE. 새로운 폴더 생성, git clone
- // projectinfo 에 새로운 프로젝트 추가
- // userproject 에 새로운 프로젝트 추가
- // invitation  에 동일 프로젝트에 초대한된 기록이 있으면 모두 제거
  *********************************************************/
 function projectinfo_create_ (user_id, project_name, project_desc, project_create_handler, res) {
 

@@ -11,11 +11,8 @@ var fileTreePath = "";
 
 var tttt = 0;
 
-// **************************** 2.26 ****************************
 var __filePath;
 var pupup_time = 2000;
-// **************************** 2.26 ****************************
-
 ////////////////
 // 포스트잇 붙이기
 ////////////////
@@ -41,10 +38,6 @@ $(document).ready(function() {
 	var socket = io();
 
 
-	//////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////
-	///////////////////// cwlsn88 /////////////////////
-	
 	
 	$(document).on({
 		ajaxStart : function(){
@@ -129,13 +122,6 @@ $(document).ready(function() {
 	});
 
 
-
-
-
-
-
-
-
 	/////////////////////////////////////////
 	// USER WORKLIST - 포스트잇에 id
 	/////////////////////////////////////////
@@ -185,10 +171,6 @@ $(document).ready(function() {
 	});
 
 
-	// *********************************** 2.26 ****************************
-	// flag : is selected fileTree or top bar?
-	// *********************************** 2.26 ****************************
-	// flag : is selected fileTree or top bar?
 	function make_editor(data, file, flag, _working_flag){
 		$("#right_editor").children().remove();
 		$("#right_editor").append("<div id='right_editor_inner' style='top:63px;'></div>");
@@ -267,8 +249,6 @@ $(document).ready(function() {
 			readOnly : false
 		});
 		
-		// *********************************** 2.26 ****************************
-
 		
 		// Change Values when choosing other file
 		prv_contents = data;
@@ -303,7 +283,6 @@ $(document).ready(function() {
 				$("#right_topbar_sortable > li:eq("+ li_index +")").addClass("file_selected");
 			}
 		}
-        
 		// ace 에디터에 자동완성을 위한 이벤트핸들러 등록 
         $(".ace_text-input").keydown(hdlr_showBox);
 	}
@@ -329,7 +308,6 @@ $(document).ready(function() {
 		}
 	});
 
-	// **************************** 2.26 ****************************
 	// Sortable settings...
 	$("#right_topbar_sortable").on("click", "span", function(){
 		$(this).parent().remove();
@@ -382,24 +360,10 @@ $(document).ready(function() {
 
 		});
 
-		// var pre_sel = $("#right_topbar_sortable").children(".file_selected");
-		// $(pre_sel).removeClass("file_selected");
-		// $(pre_sel).addClass("file_notSelected");
-
-		// $(e.target).removeClass("file_notSelected");
-		// $(e.target).addClass("file_selected");
-
-		// $.post('openFile', {path : file_path}, function(data){
-		// 	if(data != "&*^nothing"){
-		// 		make_editor(data, file_path, 0);	
-		// 	}
-		// });
-	
 
 
 	});
 	
-	// **************************** 2.26 ****************************
 
 	$("#right_topbar_sortable").sortable({
 		axis : "x"
@@ -459,27 +423,7 @@ $(document).ready(function() {
 		$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
 			isShownBtmMenu = false;
 		$.get("/btm_menu_run?id=" + _GLOBAL.id + "&project=" + _GLOBAL.project, function(data, status){
-			//alert(data);
-/*			if(data == "success"){
-				$("#mini_popup_img").attr("src", "img/check.png");
-				$("#mini_popup_text").text("Run Project Successed");
-				$("#mini_popup").fadeIn("slow", function() {
-					setTimeout(function() {
-						$("#mini_popup").fadeOut("slow");
-					}, pupup_time);
-				$("#right_log_inner").append(data);
-				});
-			}
-			else(data == "fail"){
-				$("#mini_popup_img").attr("src", "img/not_check.png");
-				$("#mini_popup_text").text("Run Project Failed");
-				$("#mini_popup").fadeIn("slow", function() {
-					setTimeout(function() {
-						$("#mini_popup").fadeOut("slow");
-					}, pupup_time);
-				$("#right_log_inner").append(data);
-				});
-			}*/
+
 				$("#mini_popup_img").attr("src", "img/check.png");
 				$("#mini_popup_text").text("Run Project Successed");
 				$("#mini_popup").fadeIn("slow", function() {
@@ -491,7 +435,7 @@ $(document).ready(function() {
 			make_fileTree(fileTreePath); 
 		});
 	});
-	///////////////
+	
 	$("#btm_menu_export").click(function(){
 		$("#btm_menu").animate({top : "130%"}, {duration: 1000, easing: 'easeInOutBack'});
 		isShownBtmMenu = false;
@@ -530,7 +474,6 @@ $(document).ready(function() {
 	});
 	
 
-	///////////////
 	$("#dialog_select_project_proj").scroll();
 
 	$("#dialog_select_project_proj").on("click", "a", function(){
@@ -623,19 +566,8 @@ $(document).ready(function() {
 	socket.on("room_in_init_draw", function(data) {
 		//alert("오나?!?!");
 		//***************************alert(data.works);//****얘 여러번옴. 추후 수정 요. ()
-		var position = 0;
-
-
-			//$("#user_container > div").each(function(index2){
-		 	//console.log(filePathArr[filePathArr.length - 1] + "/" + $(this).text().slice(1, $(this).text().length));
-		 	//var tmp = $(this).children("p").text();
-
-			// if(data.works[index].name == tmp){
-			// 	//이미 그려진 애가 있으면 그리지마라
-			// } else {
-			// 	//그려진 애가 없을 때, 그려준다.
-			//****************************************
-		var tempArray = [];
+	var position = 0;
+	var tempArray = [];
 		for(var p in data.works) {
 			tempArray.push(data.works[p].name);
 		} // 이름만 다 넣어줌
@@ -648,25 +580,10 @@ $(document).ready(function() {
 			}
 		});
 		
-		//alert("uniqueIds::" + uniqueIds);
-
-		//for(var index in data.works)
 		for(var index in uniqueIds)
 		{
-			//작업중이던 다른 사용자를 찾아서
-			// (나를 제외한 다른 사용자들이면)
-			//if(data.works[index].name != data.id)
 			if(uniqueIds[index] != data.id)
 			{
-				//이미 그린 애와 같은 사람인지 확인해서, 다를때만 그린다.
-				// var uniqueIds = [];
-				// $.each(tempArray, function(i, el) {
-				// 	if($.inArray(el, uniqueIds) === -1) {
-				// 		uniqueIds.push(el);
-				// 	}
-				// });
-				
-				//빈자리를 찾는다
 				for(var i in userIndexArray) {
 					if(userIndexArray[i] == 0) {
 						position = i;
@@ -706,27 +623,6 @@ $(document).ready(function() {
 	});
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// *********************************** 2.26 ****************************
 	// Context Menu
 
 	// Put Dir,File path for make/delete Dir,File
@@ -797,9 +693,15 @@ $(document).ready(function() {
 						});
 					}
 				}},
-				"sep1": "---------",
+				
 				"refresh": {name: "Refresh", icon: "refresh", callback: function(){
 					make_fileTree(fileTreePath);
+				}},
+				"sep1": "---------",
+				"graphical": {name: "graphical_layout", icon: "graphical_layout", callback: function(){
+						
+							window.open("http://www.naver.com","_blank");
+						
 				}}
 	        }
 		});
@@ -845,9 +747,6 @@ $(document).ready(function() {
 		$("#dialog_makeDirFile2").dialog("close");
 		make_fileTree(fileTreePath);
 	});
-
-	// *********************************** 2.26 ****************************
-
 
 	$("#personal_info > img").click(function() {
 		if (isPerInfoVisible) {
@@ -1097,17 +996,6 @@ $(document).ready(function() {
 	}); 	
 	
 	
-	
-	
-	// ************************* LOG ***********************************
-	// ************************* LOG ***********************************
-	// ************************* LOG ***********************************
-
-	
-	// ************************* LOG ***********************************
-	// ************************* LOG ***********************************
-	// ************************* LOG ***********************************
-
 
 
 
@@ -1119,9 +1007,7 @@ $(document).ready(function() {
 	console.log("connect to socket.io");
 
 	////////////////////////////////////
-	////////////////////////////////////
 	// SEND
-	////////////////////////////////////
 	////////////////////////////////////	
 
 	$(".git_button").click(function() {
@@ -1168,9 +1054,7 @@ $(document).ready(function() {
 	
 
 	////////////////////////////////////
-	////////////////////////////////////
 	// RECEIVE
-	////////////////////////////////////
 	////////////////////////////////////
 	
 	
@@ -1223,9 +1107,6 @@ $(document).ready(function() {
 			}
 			else
 				console.log("pull fail.", data.reason);
-
-			//$("#git_pull").html("pull");
-
 		});
 
 		socket.on("commit_response", function(data) {
@@ -1240,7 +1121,6 @@ $(document).ready(function() {
 						$("#mini_popup").fadeOut("slow");
 					}, pupup_time);
 				});
-				//$("#git_commit").html("commit");
 				return;
 			}
 
@@ -1276,8 +1156,6 @@ $(document).ready(function() {
 				}
 			}
 
-			//$("#git_commit").html("commit");
-
 		});
 
 		socket.on("push_response", function(data) {
@@ -1292,7 +1170,6 @@ $(document).ready(function() {
 						$("#mini_popup").fadeOut("slow");
 					}, pupup_time);
 				});
-				//$("#git_push").html("push");
 				return;
 			}
 

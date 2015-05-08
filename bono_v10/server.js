@@ -3,7 +3,6 @@ var path = require('path');
 
 var cheerio = require('cheerio');
 
-// BONOBONO MODULES
 var db = require('./db.js')();
 var git = require('./git.js');
 var gitTree = require('./git_log.js')();
@@ -30,32 +29,23 @@ var unzip = require('unzip');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 
-// ************************************* 2.26 ******************************f
 // rimraf - delete dir recursive
 var rimraf = require('rimraf');
-// ************************************* 2.26 ******************************
 
 
-//****************************** work sync ******************************
 var CurrentProjectsArray = [];
 
 function projectObj(_name, _workArray) {
 	this.p_name = _name;
 	this.workArray = _workArray;
 }
-//3.// var proj1 = new projectObj('aaaaaaaaaaaaaaaaaaa',workArray);
-//4.// CurrentProjectsArray.push(proj1);
 
 function taskObj(_name, _work) {
 	this.name = _name;
 	this.work = _work;
 }
-//1.// var task1 = new taskObj(user_name,file_path);
-//2.// workArray.push(task1);
 
-	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
-	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
-	// mobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobilemobile
+
 function chkDevice(req, res, next){
 	var ua = req.header('user-agent').toLowerCase();
 	//console.log(ua);
@@ -69,15 +59,6 @@ function chkDevice(req, res, next){
     }
 }
 
-///////////////test dummy
-// var workArray1 = [];
-// var t1 = new taskObj('chang','./user_data/projects/ace_test2/_a/ant.properties');
-// workArray1.push(t1);
-// var t2 = new taskObj('chang','testfile');
-// workArray1.push(t2);
-
-// proj1 = new projectObj('ace_test2',workArray1);
-// CurrentProjectsArray.push(proj1);
 
 
 
@@ -152,8 +133,6 @@ app.get('/make_dir', function(req, res){
 	});
 });
 
-//   ************************ 2.26 ************************
-
 app.get('/make_file', function(req, res){
 	var path = req.param("path");
 
@@ -168,11 +147,7 @@ app.get('/delete_file', function(req, res){
 	var stats = fs.stat(path, function(err, stat){
 		var isDir = stat.isDirectory();
 		if(isDir){
-			/*
-			fs.rmdir(path, function(){
-							console.log("Folder Deleted..");
-							res.send("Folder Deleted..");
-						});*/
+		
 			rimraf(path, function(){
 				console.log("Folder/File Deleted..");
 				res.send("Folder/File Deleted..");
@@ -184,6 +159,12 @@ app.get('/delete_file', function(req, res){
 			});
 		}
 	});
+});
+
+app.get('/graphical', function(req, res){
+	var path = req.param("path");
+	console.log("path"+path);
+	
 });
 
 // method - get /signUp : Sign Up for new User
@@ -288,19 +269,7 @@ function draw_handler(_finalObject, res) {
 	console.log(context, "origin_length- ", _finalObject.originLogTreeArray.length + "\n" + "user_length- ", _finalObject.userLogTreeArray.length + "\n");
 	console.log("_finalObject: " + "\n" + JSON.stringify(_finalObject));
 
-	//log_diff_cnt 동작 ////////////////////////////////////
-	// for(idx in _finalObject.originLogTreeArray)
-	// {
-	// 	if(_finalObject.originLogTreeArray[idx].commit_hash !== _finalObject.my_position) 
-	// 	{
-	// 		log_diff_cnt++;
-	// 	}	
-	// 	else
-	// 	{
-	// 		break;
-	// 	}
-	// }
-	/////////////////////////////////////////////////////////
+	
 
 	if(_finalObject.originLogTreeArray.length <= _finalObject.userLogTreeArray.length) 
 	{	
@@ -619,10 +588,6 @@ app.get('/updatetarget', function(req, res){
 });
 
 
-/**********************************************************************
-	POST MESSAGE HANDLERS
-**********************************************************************/
-
 /**********
  LOGIN
  **********/
@@ -744,12 +709,6 @@ app.post('/project_invite', function(req, res){
 	db.invitation.invite(user_id, inv_id, inv_project, inv_msg, project_invite_handler, res);
 });
 
-// app.post('/project_create')
-// app.post('/project_load')
-// app.post('/project_list')
-// app.post('/project_participate')
-// app.post('/project_invite')
-
 /*********************
  EDITOR - FILE SAVE
 **********************/
@@ -774,9 +733,6 @@ app.post('/file_save', function(req, res){
 		console.log(stdout);
 			
       	
-
-
-
 			if (err === null)
 			{
 				console.log( "compile successful</br><br/>");
@@ -1015,8 +971,6 @@ io.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		console.log(context, 'a user disconnected (socket.io)/ ip address : ' + socket.handshake.address);
 	});
-
-	// ****************************************************** 2.26
 
 
 	//////////////////////
